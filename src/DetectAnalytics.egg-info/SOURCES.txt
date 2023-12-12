@@ -12,3 +12,4 @@ src/DetectAnalytics/constants/__init__.py
 src/DetectAnalytics/entity/__init__.py
 src/DetectAnalytics/pipeline/__init__.py
 src/DetectAnalytics/utils/__init__.py
+src/DetectAnalytics/utils/common.py
