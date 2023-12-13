@@ -21,7 +21,11 @@ class ConfigurationManager:
             root_dir=config.root_dir,
             source_URL=config.source_URL,
             local_data_file=config.local_data_file,
-            unzip_dir=config.unzip_dir 
+            unzip_dir=config.unzip_dir,
+            params_image_height=self.params.IMAGE_HEIGHT,
+            params_image_width=self.params.IMAGE_WIDTH,
+            params_sequence=self.params.SEQUENCE,
+            params_classes_list=self.params.CLASSES_LIST
         )
 
         return data_ingestion_config
