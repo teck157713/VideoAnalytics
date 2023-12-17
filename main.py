@@ -18,8 +18,8 @@ except Exception as e:
 STAGE_NAME = "Prepare Model"
 try:
     logger.info(f">>> stage {STAGE_NAME} started <<<")
-    data_ingestion = PrepareModelTrainingPipeline()
-    data_ingestion.main()
+    prepare_base_model = PrepareModelTrainingPipeline()
+    prepare_base_model.main()
     logger.info(f">>> stage {STAGE_NAME} completed <<<\n\nx==========xx")
 except Exception as e:
     logger.exception(e)
@@ -29,8 +29,8 @@ except Exception as e:
 STAGE_NAME = "Training"
 try:
     logger.info(f">>> stage {STAGE_NAME} started <<<")
-    obj = ModelTrainingPipeline()
-    obj.main()
+    model_trainer = ModelTrainingPipeline()
+    model_trainer.main()
     logger.info(f">>> stage {STAGE_NAME} completed <<<\n\nx==========xx")
 except Exception as e:
     logger.exception(e)
@@ -40,8 +40,8 @@ except Exception as e:
 STAGE_NAME = "Evaluation Stage"
 try:
     logger.info(f">>> stage {STAGE_NAME} started <<<")
-    obj = EvaluationPipeline()
-    obj.main()
+    model_evalution = EvaluationPipeline()
+    model_evalution.main()
     logger.info(f">>> stage {STAGE_NAME} completed <<<\n\nx==========xx")
 except Exception as e:
     logger.exception(e)
