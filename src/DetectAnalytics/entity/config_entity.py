@@ -26,3 +26,10 @@ class PrepareModelConfig:
     params_image_width: int
     params_sequence: int
     params_classes_list: list
+
+@dataclass(frozen=True)
+class PrepareCallbacksConfig:
+    root_dir: Path
+    tensorboard_root_log_dir: Path
+    checkpoint_model_filepath: Path
+    checkpoint_filepath_str: str
