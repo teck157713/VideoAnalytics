@@ -1,10 +1,12 @@
 from DetectAnalytics.constants import *
 import os
+from pathlib import Path
 from DetectAnalytics.utils.common import read_yaml, create_directories
 from DetectAnalytics.entity.config_entity import (DataIngestionConfig,
                                                   PrepareModelConfig,
                                                   PrepareCallbacksConfig,
-                                                  TrainingConfig)
+                                                  TrainingConfig,
+                                                  EvaluationConfig)
 
 class ConfigurationManager:
     def __init__(self, config_filepath = CONFIG_FILE_PATH, params_filepath = PARAMS_FILE_PATH):
@@ -89,3 +91,14 @@ class ConfigurationManager:
         )
 
         return training_config
+    
+    def get_validation_config(self) -> EvaluationConfig:
+          eval_config = EvaluationConfig(
+                path_of_model=Path("artifacts/training/model.h5"),
+                training_data=Path("artifacts/data_ingestion/fighting_video"),
+                all_params=self.params,
+                params_image_size=self.params.IMAGE_SIZE,
+                params_batch_size=self.params.BATCH_SIZE
+
+          )
+          return eval_config
