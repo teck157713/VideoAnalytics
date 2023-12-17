@@ -1,6 +1,7 @@
 from DetectAnalytics.constants import *
 from DetectAnalytics.utils.common import read_yaml, create_directories
-from DetectAnalytics.entity.config_entity import DataIngestionConfig
+from DetectAnalytics.entity.config_entity import (DataIngestionConfig,
+                                                  PrepareModelConfig)
 
 class ConfigurationManager:
     def __init__(self, config_filepath = CONFIG_FILE_PATH, params_filepath = PARAMS_FILE_PATH):
@@ -29,3 +30,25 @@ class ConfigurationManager:
         )
 
         return data_ingestion_config
+    
+    def get_prepare_base_model_config(self) -> PrepareModelConfig:
+        config = self.config.preparing_model
+        
+        create_directories([config.root_dir])
+
+        prepare_model_config = PrepareModelConfig(
+            root_dir=Path(config.root_dir),
+            base_model_path=Path(config.base_model_path),
+            updated_base_model_path=Path(config.updated_base_model_path),
+            params_image_size=self.params.IMAGE_SIZE,
+            params_learning_rate=self.params.LEARNING_RATE,
+            params_include_top=self.params.INCLUDE_TOP,
+            params_weights=self.params.WEIGHTS,
+            params_classes=self.params.CLASSES,
+            params_image_height=self.params.IMAGE_HEIGHT,
+            params_image_width=self.params.IMAGE_WIDTH,
+            params_sequence=self.params.SEQUENCE,
+            params_classes_list=self.params.CLASSES_LIST
+        )
+
+        return prepare_model_config
