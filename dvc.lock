@@ -1,0 +1,120 @@
+schema: '2.0'
+stages:
+  data_ingestion:
+    cmd: python src/DetectAnalytics/pipeline/stage_01_data_ingestion.py
+    deps:
+    - path: config/config.yaml
+      hash: md5
+      md5: 9d8c42af91244e838b1c30c4e1e5bbe5
+      size: 760
+    - path: src/DetectAnalytics/pipeline/stage_01_data_ingestion.py
+      hash: md5
+      md5: 3e5fdca35edff618160aeb11586edefb
+      size: 938
+    outs:
+    - path: artifacts/data_ingestion/firstdata
+      hash: md5
+      md5: 99bf6ca6485e75d52ad34be5134a0097.dir
+      size: 12702052768
+      nfiles: 2000
+  preparing_model:
+    cmd: python src/DetectAnalytics/pipeline/stage_02_preparing_model.py
+    deps:
+    - path: config/config.yaml
+      hash: md5
+      md5: 9d8c42af91244e838b1c30c4e1e5bbe5
+      size: 760
+    - path: src/DetectAnalytics/pipeline/stage_02_preparing_model.py
+      hash: md5
+      md5: 785b4a9491736a9b1020b5a559ed08b9
+      size: 921
+    params:
+      params.yaml:
+        CLASSES: 2
+        CLASSES_LIST:
+        - firstdata/nofight
+        - firstdata/fight
+        IMAGE_HEIGHT: 64
+        IMAGE_SIZE:
+        - 16
+        - 64
+        - 64
+        - 3
+        IMAGE_WIDTH: 64
+        INCLUDE_TOP: false
+        LEARNING_RATE: 0.01
+        SEQUENCE: 16
+        WEIGHTS: imagenet
+    outs:
+    - path: artifacts/preparing_model
+      hash: md5
+      md5: 164cddb6d484c972921f60861dc59d84.dir
+      size: 24423424
+      nfiles: 2
+  training:
+    cmd: python src/DetectAnalytics/pipeline/stage_03_training.py
+    deps:
+    - path: artifacts/data_ingestion/firstdata
+      hash: md5
+      md5: 99bf6ca6485e75d52ad34be5134a0097.dir
+      size: 12702052768
+      nfiles: 2000
+    - path: artifacts/preparing_model
+      hash: md5
+      md5: 164cddb6d484c972921f60861dc59d84.dir
+      size: 24423424
+      nfiles: 2
+    - path: config/config.yaml
+      hash: md5
+      md5: 9d8c42af91244e838b1c30c4e1e5bbe5
+      size: 760
+    - path: src/DetectAnalytics/components/prepare_callbacks.py
+      hash: md5
+      md5: d323070c786627aafdcbe0806bd992d5
+      size: 1600
+    - path: src/DetectAnalytics/pipeline/stage_03_training.py
+      hash: md5
+      md5: 29b2815fc7f0ff6b7e10de58534e5bfa
+      size: 1187
+    params:
+      params.yaml:
+        BATCH_SIZE: 8
+        EPOCHS: 50
+    outs:
+    - path: artifacts/training/model.h5
+      hash: md5
+      md5: 56331f5319f19b6b8dbf0d4d51d13b3f
+      size: 27221248
+  evaluation:
+    cmd: python src/DetectAnalytics/pipeline/stage_04_evaluation.py
+    deps:
+    - path: artifacts/data_ingestion/firstdata
+      hash: md5
+      md5: 99bf6ca6485e75d52ad34be5134a0097.dir
+      size: 12702052768
+      nfiles: 2000
+    - path: artifacts/training/model.h5
+      hash: md5
+      md5: 56331f5319f19b6b8dbf0d4d51d13b3f
+      size: 27221248
+    - path: config/config.yaml
+      hash: md5
+      md5: 9d8c42af91244e838b1c30c4e1e5bbe5
+      size: 760
+    - path: src/DetectAnalytics/pipeline/stage_04_evaluation.py
+      hash: md5
+      md5: b4ceff49c2442fa5208e84b6b9f10dcd
+      size: 807
+    params:
+      params.yaml:
+        BATCH_SIZE: 8
+        IMAGE_SIZE:
+        - 16
+        - 64
+        - 64
+        - 3
+    outs:
+    - path: scores.json
+      hash: md5
+      md5: 00da33eb3a8fe711235c3918064cc527
+      size: 73
