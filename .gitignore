@@ -50,3 +50,6 @@ Thumbs.db
 *.npy
 
 artifacts/*
+
+# Env files
+.env
