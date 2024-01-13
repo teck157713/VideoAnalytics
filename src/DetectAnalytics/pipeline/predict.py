@@ -1,10 +1,9 @@
 import numpy as np
-from tensorflow.keras.models import load_model
-from tensorflow.keras.preprocessing import image
 from DetectAnalytics.constants import PARAMS_FILE_PATH
 from DetectAnalytics.utils.common import read_yaml
 import os
 import cv2
+import tensorflow as tf
 
 class PredictionPipeline:
     params_filepath = PARAMS_FILE_PATH
@@ -16,11 +15,11 @@ class PredictionPipeline:
     def predict(self):
         
         # load model
-        model = load_model(os.path.join("artifacts","training", "model.h5"))
+        model = tf.keras.models.load_model(os.path.join("artifacts","training", "model.h5"))
 
         imagename = self.filename
-        test_image = image.load_img(imagename, target_size = (224,224))
-        test_image = image.img_to_array(test_image)
+        test_image = tf.keras.preprocessing.image.load_img(imagename, target_size = (224,224))
+        test_image = tf.keras.preprocessing.image.img_to_array(test_image)
         test_image = np.expand_dims(test_image, axis = 0)
         result = np.argmax(model.predict(test_image), axis=1)
         print(result)
@@ -33,7 +32,7 @@ class PredictionPipeline:
             return [{ "image" : prediction}]
         
     def predictvid(self, vid):
-        model = load_model(os.path.join("artifacts","training", "model.h5"))
+        model = tf.keras.models.load_model(os.path.join("artifacts","training", "model.h5"))
         print(f"vid = {vid}")
         
         video_reader = cv2.VideoCapture(vid)
@@ -71,7 +70,7 @@ class PredictionPipeline:
         predicted_label = np.argmax(predicted_labels_probabilities)
  
         # Get the class name using the retrieved index.
-        predicted_class_name = self.params.CLASSES_LIST[predicted_label]
+        predicted_class_name = self.params.CLASS_LIST[predicted_label]
     
         # Display the predicted class along with the prediction confidence.
         print(f'Predicted: {predicted_class_name}\nConfidence: {predicted_labels_probabilities[predicted_label]}')
