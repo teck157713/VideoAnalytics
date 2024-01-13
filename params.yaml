@@ -10,3 +10,4 @@ IMAGE_WIDTH: 64
 SEQUENCE: 16
 CLASSES: 2
 CLASSES_LIST: ["firstdata/nofight", "firstdata/fight"]
+CLASS_LIST: ["nofight", "/fight"]

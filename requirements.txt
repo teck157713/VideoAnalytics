@@ -8,10 +8,13 @@ seaborn
 python-box==6.0.2
 tqdm
 ensure==1.0.2
-Flask
-Flask-Cors
 joblib
 gdown
 opencv-python
 scikit-learn
+fastapi
+pydantic
+uvicorn[standard]
+pydantic-settings
+PyJWT
 -e .

@@ -1,63 +1,50 @@
-from flask import Flask, request, jsonify, render_template
+from fastapi import FastAPI
+from fastapi import Request
+from fastapi import Depends
+from fastapi import Security
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import HTTPBearer
 import os
-from flask_cors import CORS, cross_origin
+import uvicorn
 from DetectAnalytics.utils.common import decodeImage
 from DetectAnalytics.pipeline.predict import PredictionPipeline
 import http.client
+from DetectAnalytics.utils.common import VerifyToken
+
 
 
 os.putenv('LANG', 'en_US.UTF-8')
 os.putenv('LC_ALL', 'en_US.UTF-8')
 
-# conn = http.client.HTTPSConnection("")
-
-# payload = "grant_type=client_credentials&client_id=YOUR_CLIENT_ID&client_secret=YOUR_CLIENT_SECRET&audience=YOUR_API_IDENTIFIER"
-
-# headers = { 'content-type': "application/x-www-form-urlencoded" }
-
-# conn.request("POST", "/{yourDomain}/oauth/token", payload, headers)
-
-# res = conn.getresponse()
-# data = res.read()
-
-# print(data.decode("utf-8"))
-
-app = Flask(__name__)
-CORS(app)
-
+token_auth_scheme = HTTPBearer()
+app = FastAPI()
+auth = VerifyToken()
+origins = ["*"]
+app.add_middleware(CORSMiddleware, allow_origins=origins)
 
 class ClientApp:
     def __init__(self):
         self.filename = "input.mp4"
         self.classifier = PredictionPipeline(self.filename)
 
-
-@app.route("/", methods=['GET'])
-@cross_origin()
-def home():
-    return render_template('index.html')
-
-
-@app.route("/train", methods=['GET','POST'])
-@cross_origin()
-def trainRoute():
-    os.system("python main.py")
-    return "Training done successfully!"
-
-
-
-@app.route("/predict", methods=['POST'])
-@cross_origin()
-def predictRoute():
-    conn = http.client.HTTPSConnection("")
-    video = request.json['video']
+@app.post("/predict")
+async def predictRoute(request: Request):
+    video = await request.json['video']
     result = clApp.classifier.predictvid(video)
-    return jsonify(result)
+    return result
+
+@app.get("/api/private")
+def private(request: Request, token: str = Depends(token_auth_scheme)):
+    result = Security(auth.verify)
+    
+    if result.get("status"):
+        return result
+
 
 
 if __name__ == "__main__":
     clApp = ClientApp()
-    app.run(host='0.0.0.0', port=8080) #local host
+    uvicorn.run(app, host='0.0.0.0', port=8080) #local host
     headers = { 'content-type': "application/x-www-form-urlencoded" }
     # app.run(host='0.0.0.0', port=8080) #for AWS
     # app.run(host='0.0.0.0', port=80) #for AZURE
