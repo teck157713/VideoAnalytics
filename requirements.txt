@@ -13,8 +13,9 @@ gdown
 opencv-python
 scikit-learn
 fastapi
-pydantic
+-U pydantic
 uvicorn[standard]
 pydantic-settings
 PyJWT
+httpx
 -e .
